@@ -1,0 +1,6 @@
+name: MCPG-Bungee
+author: MileKat
+main: fr.milekat.MCPG_Bungee.MainBungee
+version: '1.0'
+api-version: '1.16'
+description: Plugin cite au émeraudes par MileKat
