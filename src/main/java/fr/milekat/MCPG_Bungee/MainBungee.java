@@ -1,50 +1,47 @@
 package fr.milekat.MCPG_Bungee;
 
+import fr.milekat.MCPG_Bungee.chat.ChatManager;
+import fr.milekat.MCPG_Bungee.core.CoreManager;
+import fr.milekat.MCPG_Bungee.data.DataManager;
+import fr.milekat.MCPG_Bungee.data.MariaDB.MariaManage;
 import fr.milekat.MCPG_Bungee.proxy.ConnectionsManager;
 import fr.milekat.MCPG_Bungee.utils.DateMilekat;
-import fr.milekat.MCPG_Bungee.data.MariaManage;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
+import redis.clients.jedis.Jedis;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.util.Date;
 
 public class MainBungee extends Plugin {
+    //  Bungee/configs
+    private static MainBungee mainBungee;
+    private Configuration config;
+    public final static String PREFIX = "§8[§6Cité Givrée§8]§r ";
+    public static boolean DEBUG_ERRORS = false;
+
+    //  SQL/Jedis
+    private MariaManage sql;
+    private Jedis jedis;
+    public static boolean DEBUG_JEDIS = false;
+
     //  Dates
     public final static Date DATE_MAINTENANCE = DateMilekat.getDate("01/01/2021 00:00:00");
     public final static Date DATE_OPEN = DateMilekat.getDate("16/04/2021 14:00:00");
-    //  Jedis
-    public final static boolean DEBUG_JEDIS = false;
-
-    //  Core
-    public final static boolean DEBUG_ERRORS = false;
-    public final static String PREFIX = "§8[§6Cité Givrée§8]§r ";
-
-    //  Main
-    private static MainBungee mainBungee;
-    private Configuration config;
-    private MariaManage sql;
 
     @Override
     public void onEnable(){
+        /* Bungee/configs */
         mainBungee = this;
-        try {
-            config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(new File(getDataFolder(),"config.yml"));
-        } catch (IOException throwables) {
-            MainBungee.warning("Erreur config File: " + throwables);
-        }
-        /* SQL */
-        sql = new MariaManage("jdbc:mysql://",
-                config.getString("SQL.host"),
-                config.getString("SQL.db-user"),
-                config.getString("SQL.user"),
-                config.getString("SQL.log"));
-        sql.connection();
+        DataManager data = new DataManager(this);
+        config = data.getConfigurations();
+        /* SQL/Jedis */
+        sql = data.getSQL();
+        jedis = data.getJedis();
+        /* Classes */
+        new CoreManager(this, ProxyServer.getInstance().getPluginManager());
+        new ChatManager(this, ProxyServer.getInstance().getPluginManager());
         new ConnectionsManager(this, ProxyServer.getInstance().getPluginManager());
     }
 
@@ -63,4 +60,6 @@ public class MainBungee extends Plugin {
     public static Configuration getConfig(){ return mainBungee.config; }
 
     public static Connection getSql(){ return mainBungee.sql.getConnection(); }
+
+    public static Jedis getJedis(){ return mainBungee.jedis; }
 }

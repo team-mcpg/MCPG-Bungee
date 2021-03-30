@@ -1,4 +1,4 @@
-package fr.milekat.MCPG_Bungee.data;
+package fr.milekat.MCPG_Bungee.data.MariaDB;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
 import net.md_5.bungee.api.ProxyServer;

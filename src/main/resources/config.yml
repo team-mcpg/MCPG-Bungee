@@ -16,3 +16,29 @@ redis:
 other:
   debug_exeptions: false
 #
+
+chat:
+  spam_limit_warn: 8
+  spam_limit_kick: 10
+  kick_message: "§cTrop de spam !"
+  min_lower_case_length: 3
+  banned_words:
+    - salope
+    - gg
+#
+
+connection:
+  # @time to show the reaming time until the end of building phase "Xjours Xh Xm Xs"
+  building: "l'évent débute dans @time"
+  # @time to show the reaming time until the end of the maintenance "Xjours Xh Xm Xs"
+  maintenance: "le serveur est en maintenance jusqu'à @time"
+  full: "Le serveur est complet"
+  ban: "Vous êtes banis définitivement"
+  # @time to show the reaming time until unban "Xjours Xh Xm Xs"
+  tempban: "Vous êtes banis jusqu'à @time"
+  register: "Vous n'êtes pas inscrit ou votre inscription n'est pas validée par le staff"
+  # @player to refer to the display name of player
+  join: "@player a rejoint la cité"
+  # @player to refer to the display name of player
+  leave: "@player a rejoint la cité"
+#

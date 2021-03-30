@@ -7,9 +7,9 @@ public class Team {
     private final String name;
     private final String tag;
     private final int money;
-    private final ArrayList<Profil> members;
+    private final ArrayList<Profile> members;
 
-    public Team(int id, String name, String tag, int money, ArrayList<Profil> members) {
+    public Team(int id, String name, String tag, int money, ArrayList<Profile> members) {
         this.id = id;
         this.name = name;
         this.tag = tag;
@@ -33,7 +33,7 @@ public class Team {
         return money;
     }
 
-    public ArrayList<Profil> getMembers() {
+    public ArrayList<Profile> getMembers() {
         return members;
     }
 
