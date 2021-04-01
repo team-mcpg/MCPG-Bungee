@@ -24,7 +24,7 @@ public class UnMuteCmd extends Command {
                     sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§cJoueur pas mute."));
                     return;
                 }
-                ChatUtils.unMute(profile.getName(), sender.getName(), CoreUtils.getReason(1, args));
+                ChatUtils.unMute(profile.getName(), sender.getName(), CoreUtils.getArgsText(1, args));
             } catch (SQLException throwable) {
                 sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§cJoueur introuvable."));
             }

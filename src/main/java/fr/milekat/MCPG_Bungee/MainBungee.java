@@ -9,7 +9,6 @@ import fr.milekat.MCPG_Bungee.utils.DateMilekat;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
-import redis.clients.jedis.Jedis;
 
 import java.sql.Connection;
 import java.util.Date;
@@ -23,7 +22,6 @@ public class MainBungee extends Plugin {
 
     //  SQL/Jedis
     private MariaManage sql;
-    private Jedis jedis;
     public static boolean DEBUG_JEDIS = false;
 
     //  Dates
@@ -38,7 +36,7 @@ public class MainBungee extends Plugin {
         config = data.getConfigurations();
         /* SQL/Jedis */
         sql = data.getSQL();
-        jedis = data.getJedis();
+        data.getJedis();
         /* Classes */
         new CoreManager(this, ProxyServer.getInstance().getPluginManager());
         new ConnectionsManager(this, ProxyServer.getInstance().getPluginManager());

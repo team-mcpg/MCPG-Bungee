@@ -2,6 +2,7 @@ package fr.milekat.MCPG_Bungee.core;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
+import fr.milekat.MCPG_Bungee.core.obj.Team;
 import fr.milekat.MCPG_Bungee.utils.Tools;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -10,6 +11,7 @@ import net.luckperms.api.model.user.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -65,10 +67,57 @@ public class CoreUtils {
                 q.getResultSet().getBoolean("maintenance"));
     }
 
-    /**+
+    /**
+     * Get the team of player by his discord id
+     */
+    public static Team getPlayerTeam(UUID uuid) throws SQLException {
+        int team;
+        Connection connection = MainBungee.getSql();
+        PreparedStatement q = connection.prepareStatement("SELECT `team_id` FROM `mcpg_player` WHERE `uuid` = ?;");
+        q.setString(1, uuid.toString());
+        q.execute();
+        q.getResultSet().next();
+        team = q.getResultSet().getInt("team_id");
+        q.close();
+        return getTeam(team);
+    }
+
+    /**
+     * Get a team
+     */
+    public static Team getTeam(Integer id) throws SQLException {
+        Connection connection = MainBungee.getSql();
+        PreparedStatement q = connection.prepareStatement("SELECT `name` FROM `mcpg_team` WHERE `team_id` = ?;");
+        q.setInt(1, id);
+        q.execute();
+        q.getResultSet().next();
+        Team team = new Team(
+                q.getResultSet().getString("name"),
+                CoreUtils.getTeamMembers(id));
+        q.close();
+        return team;
+    }
+
+    /**
+     * Get all current team members
+     */
+    public static ArrayList<Profile> getTeamMembers(Integer id) throws SQLException {
+        ArrayList<Profile> members = new ArrayList<>();
+        Connection connection = MainBungee.getSql();
+        PreparedStatement q = connection.prepareStatement("SELECT * FROM `mcpg_player` WHERE `team_id` = ?;");
+        q.setInt(1, id);
+        q.execute();
+        while (q.getResultSet().next()) {
+            members.add(getFromSQL(q));
+        }
+        q.close();
+        return members;
+    }
+
+    /**
      * Concatenates args from minecraft command
      */
-    public static String getReason(int skip_args, String... args) {
+    public static String getArgsText(int skip_args, String... args) {
         StringBuilder sb = new StringBuilder();
         for (int loop=0; loop < args.length; loop++) {
             if (loop < skip_args) continue;

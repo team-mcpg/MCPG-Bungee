@@ -36,7 +36,7 @@ public class JoinLeaveMessages implements Listener {
 
     @EventHandler
     public void onProxyLeave(PlayerDisconnectEvent event) {
-        String msg = MainBungee.getConfig().getString("connection.join")
+        String msg = MainBungee.getConfig().getString("connection.leave")
                 .replaceAll("@player", event.getPlayer().getName());
         //  Redis
         JedisPub.sendRedisChat(msg);

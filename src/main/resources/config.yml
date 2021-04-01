@@ -43,5 +43,5 @@ connection:
   # @player to refer to the display name of player
   join: "@player a rejoint la cité"
   # @player to refer to the display name of player
-  leave: "@player a rejoint la cité"
+  leave: "@player a quitté la cité"
 #

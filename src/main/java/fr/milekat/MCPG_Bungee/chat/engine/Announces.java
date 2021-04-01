@@ -1,10 +1,8 @@
 package fr.milekat.MCPG_Bungee.chat.engine;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
-import fr.milekat.MCPG_Bungee.data.jedis.JedisPub;
+import fr.milekat.MCPG_Bungee.chat.ChatUtils;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,10 +21,7 @@ public class Announces {
                         "WHERE `min` < NOW() AND `max` > NOW() ORDER BY RAND() LIMIT 1;");
                 q.execute();
                 if (q.getResultSet().last()) {
-                    JedisPub.sendRedisChat(q.getResultSet().getString("message"));
-                    for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                        player.sendMessage(new TextComponent(q.getResultSet().getString("message")));
-                    }
+                    ChatUtils.sendAnnounce(q.getResultSet().getString("message"));
                 } else if (MainBungee.DEBUG_ERRORS) MainBungee.warning("Pas de nouvelle annonce.");
                 q.close();
             } catch (SQLException throwable) {

@@ -1,6 +1,7 @@
 package fr.milekat.MCPG_Bungee.chat.events;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
+import fr.milekat.MCPG_Bungee.chat.ChatUtils;
 import fr.milekat.MCPG_Bungee.core.CoreUtils;
 import fr.milekat.MCPG_Bungee.core.events.CustomJedisSub;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
@@ -34,26 +35,35 @@ public class Chat implements Listener {
     }
 
     @EventHandler
-    public void onDiscordChat(CustomJedisSub event) {
-        String[] raw = event.getRedisMsg().split("\\|");
-        String message = cleanMessages(event.getRedisMsg().replaceAll(raw[0] + "\\|", ""), UUID.fromString(raw[0]));
-        if (message!=null) sendChat(UUID.fromString(raw[0]), message);
-    }
-
-    @EventHandler
     public void onChat(ChatEvent event) {
         if (event.isCommand()) return;
         event.setCancelled(true);
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-        String message = cleanMessages(event.getMessage(), player.getUniqueId());
-        if (message==null) return;
         if (CHAT_TEAM.contains(player.getUniqueId())) {
-            // TODO: 31/03/2021 Message que pour la team
+            try {
+                ChatUtils.sendChatTeam(player, event.getMessage());
+            } catch (SQLException throwable) {
+                player.sendMessage(new TextComponent(MainBungee.PREFIX + "§cData error."));
+                throwable.printStackTrace();
+            }
         } else {
+            String message = cleanMessages(event.getMessage(), player.getUniqueId());
+            if (message==null) return;
             sendChat(player.getUniqueId(), message);
         }
     }
 
+    @EventHandler
+    public void onDiscordChat(CustomJedisSub event) {
+        String[] raw = event.getRedisMsg().split("\\|");
+        String message = cleanMessages(event.getRedisMsg().replaceAll(raw[0] + "\\|", ""),
+                UUID.fromString(raw[0]));
+        if (message!=null) sendChat(UUID.fromString(raw[0]), message);
+    }
+
+    /**
+     * Send message in chat
+     */
     private void sendChat(UUID uuid, String message) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         try {
@@ -63,19 +73,20 @@ public class Chat implements Listener {
                     prefix + " " + player.getDisplayName() + " §b»§r " + message);
             if (profile.isMute()) {
                 if (player.isConnected()) {
-                    player.sendMessage(new TextComponent("§c[mute] " + msg));
+                    player.sendMessage(new TextComponent("§c§l[MUTE]§r " + msg));
                     warnMute(player, profile);
                 }
                 for (ProxiedPlayer modo : ProxyServer.getInstance().getPlayers()) {
                     if (!modo.getUniqueId().equals(player.getUniqueId()) && modo.hasPermission("modo.mute.other.see")) {
-                        modo.sendMessage(new TextComponent("§c[mute] " + msg));
+                        modo.sendMessage(new TextComponent("§c§l[MUTE]§r " + msg));
                     }
                 }
             } else {
-                // Redis
+                //  Global chat
                 for (ProxiedPlayer players : ProxyServer.getInstance().getPlayers()) {
-                    players.sendMessage(new TextComponent(msg));
+                    players.sendMessage(uuid, new TextComponent(msg));
                 }
+                //  Redis
                 JedisPub.sendRedisChat(ChatColor.stripColor(msg));
             }
             // Log du message dans la console, comme un message normal
@@ -85,6 +96,9 @@ public class Chat implements Listener {
         }
     }
 
+    /**
+     * Send time before unMute
+     */
     private void warnMute(ProxiedPlayer player, Profile profile) {
         String str = DateMilekat.reamingToString(profile.getMuted());
         TextComponent Mute = new TextComponent(MainBungee.PREFIX + "§6Vous serez unmute dans §b" + str + "§c.");

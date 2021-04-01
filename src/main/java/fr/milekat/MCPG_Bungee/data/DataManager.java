@@ -48,7 +48,7 @@ public class DataManager {
         return mariaManage;
     }
 
-    public Jedis getJedis() {
+    public void getJedis() {
         Jedis jedis = new Jedis(MainBungee.getConfig().getString("redis.host"),
                 Integer.parseInt(Objects.requireNonNull(MainBungee.getConfig().getString("redis.port"))),
                 0);
@@ -68,7 +68,6 @@ public class DataManager {
                 }
             }
         }.start();
-        return jedis;
     }
 
     private String[] getJedisChannels() {

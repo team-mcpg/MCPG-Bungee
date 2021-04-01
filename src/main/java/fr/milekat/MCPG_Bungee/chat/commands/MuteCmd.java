@@ -23,7 +23,7 @@ public class MuteCmd extends Command {
             try {
                 Profile profile = CoreUtils.getProfile(args[0]);
                 Long time = DateMilekat.stringToPeriod(args[1]) + new Date().getTime();
-                ChatUtils.mute(profile.getName(), sender.getName(), time, CoreUtils.getReason(2, args));
+                ChatUtils.mute(profile.getName(), sender.getName(), time, CoreUtils.getArgsText(2, args));
             } catch (SQLException throwable) {
                 sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§cJoueur introuvable."));
             }
@@ -36,6 +36,7 @@ public class MuteCmd extends Command {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
         sender.sendMessage(new TextComponent("§6/mute <player> <time> <reason>:§r Mute le joueur."));
     }
 }
