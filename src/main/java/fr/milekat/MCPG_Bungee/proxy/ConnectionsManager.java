@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 public class ConnectionsManager {
@@ -22,30 +23,32 @@ public class ConnectionsManager {
     }
 
     /**
-     * Get a Player Profil
+     * Get a Player Profile
      */
-    public Profile getProfil(String uuid) throws SQLException {
+    public Profile getProfile(String uuid) throws SQLException {
         Connection connection = MainBungee.getSql();
         PreparedStatement q = connection.prepareStatement("SELECT * FROM `mcpg_player` WHERE `uuid` = ?;");
         q.setString(1, uuid);
         q.execute();
         q.getResultSet().next();
-        Profile profil = new Profile(q.getResultSet().getString("username"),
+        Profile profile = new Profile(q.getResultSet().getString("username"),
                 UUID.fromString(q.getResultSet().getString("uuid")),
                 q.getResultSet().getInt("team_id"),
-                q.getResultSet().getString("muted"),
-                q.getResultSet().getString("banned"),
+                q.getResultSet().getTimestamp("muted")==null ? null :
+                        new Date(q.getResultSet().getTimestamp("muted").getTime()),
+                q.getResultSet().getTimestamp("banned")==null ? null :
+                        new Date(q.getResultSet().getTimestamp("banned").getTime()),
                 q.getResultSet().getString("reason"),
                 q.getResultSet().getBoolean("maintenance"));
         q.close();
-        return profil;
+        return profile;
     }
 
     public ArrayList<ProxiedPlayer> getNonStaff() {
-        ArrayList<ProxiedPlayer> onlines = new ArrayList<>();
+        ArrayList<ProxiedPlayer> online = new ArrayList<>();
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (!player.hasPermission("modo")) onlines.add(player);
+            if (!player.hasPermission("modo")) online.add(player);
         }
-        return onlines;
+        return online;
     }
 }

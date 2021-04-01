@@ -8,7 +8,7 @@ import redis.clients.jedis.JedisPubSub;
 public class JedisSub extends JedisPubSub {
     @Override
     public void onMessage(String channel, String message) {
-        if (!channel.equalsIgnoreCase(MainBungee.getConfig().getString("redis.thischannel"))) {
+        if (!channel.contains(MainBungee.getConfig().getString("redis.server-name"))) {
             if (MainBungee.DEBUG_JEDIS) MainBungee.info("SUB:{" + channel + "}|MSG:{" + message + "}");
             ProxyServer.getInstance().getPluginManager().callEvent(new CustomJedisSub(channel,message));
         } else {

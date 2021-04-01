@@ -9,7 +9,10 @@ redis:
   host: "localhost"
   port: "6379"
   auth: ""
-  thischannel: "bungee"
+  server-name: "bungee"
+  out-channels:
+    chat: "chat_bungeecord"
+    log: "log_bungeecord"
   debug: false
 #
 

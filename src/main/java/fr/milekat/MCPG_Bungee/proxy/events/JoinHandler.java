@@ -29,10 +29,10 @@ public class JoinHandler implements Listener {
     @EventHandler
     public void onTryJoin(LoginEvent event) {
         try {
-            Profile profil = manager.getProfil(event.getConnection().getUniqueId().toString());
-            if (profil==null || profil.getTeam()==0) throw new SQLException();
+            Profile profile = manager.getProfile(event.getConnection().getUniqueId().toString());
+            if (profile==null || profile.getTeam()==0) throw new SQLException();
             if (MainBungee.DATE_OPEN!=null && MainBungee.DATE_OPEN.getTime() > new Date().getTime()) {
-                if (profil.notMaintenance()) {
+                if (profile.notMaintenance()) {
                     event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.building")
                             .replaceAll("@time", DateMilekat.reamingToString(MainBungee.DATE_OPEN))));
                     event.setCancelled(true);
@@ -40,7 +40,7 @@ public class JoinHandler implements Listener {
                 }
             }
             if (MainBungee.DATE_MAINTENANCE!=null && MainBungee.DATE_MAINTENANCE.getTime() > new Date().getTime()) {
-                if (profil.notMaintenance()) {
+                if (profile.notMaintenance()) {
                     event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.maintenance")
                             .replaceAll("@time", DateMilekat.reamingToString(MainBungee.DATE_MAINTENANCE))));
                     event.setCancelled(true);
@@ -52,17 +52,17 @@ public class JoinHandler implements Listener {
                 event.setCancelled(true);
                 return;
             }
-            if (profil.isBan()) {
+            if (profile.isBan()) {
                 // Le joueur est ban ou tempban
-                if (profil.getBanned().equals("def")) {
+                if (profile.getBanned().equals("def")) {
                     event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.ban")));
                 } else {
                     event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.tempban")
-                            .replaceAll("@time", DateMilekat.reamingToString(DateMilekat.getDate(profil.getBanned())))));
+                            .replaceAll("@time", DateMilekat.reamingToString(profile.getBanned()))));
                 }
                 event.setCancelled(true);
             }
-        } catch (SQLException throwables) {
+        } catch (SQLException throwable) {
             event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.register")));
             event.setCancelled(true);
         }

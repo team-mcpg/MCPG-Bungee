@@ -1,12 +1,12 @@
 package fr.milekat.MCPG_Bungee.chat.events;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
-import fr.milekat.MCPG_Bungee.chat.ChatManager;
-import fr.milekat.MCPG_Bungee.core.CoreManager;
+import fr.milekat.MCPG_Bungee.core.CoreUtils;
 import fr.milekat.MCPG_Bungee.core.events.CustomJedisSub;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
-import fr.milekat.MCPG_Bungee.data.jedis.JedisManager;
+import fr.milekat.MCPG_Bungee.data.jedis.JedisPub;
 import fr.milekat.MCPG_Bungee.utils.DateMilekat;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -17,10 +17,22 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
 public class Chat implements Listener {
+    private final HashMap<UUID, String> MSG_LAST;
+    private final HashMap<UUID, Integer> MSG_RECENT;
+    private final ArrayList<UUID> CHAT_TEAM;
+
+    public Chat(HashMap<UUID, String> msg_last, HashMap<UUID, Integer> msg_recent, ArrayList<UUID> chat_team) {
+        this.MSG_LAST = msg_last;
+        this.MSG_RECENT = msg_recent;
+        this.CHAT_TEAM = chat_team;
+    }
+
     @EventHandler
     public void onDiscordChat(CustomJedisSub event) {
         String[] raw = event.getRedisMsg().split("\\|");
@@ -35,7 +47,7 @@ public class Chat implements Listener {
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         String message = cleanMessages(event.getMessage(), player.getUniqueId());
         if (message==null) return;
-        if (ChatManager.CHAT_TEAM.contains(player.getUniqueId())) {
+        if (CHAT_TEAM.contains(player.getUniqueId())) {
             // TODO: 31/03/2021 Message que pour la team
         } else {
             sendChat(player.getUniqueId(), message);
@@ -45,25 +57,36 @@ public class Chat implements Listener {
     private void sendChat(UUID uuid, String message) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         try {
-            Profile profil = CoreManager.getProfile(uuid.toString());
-            // TODO: 31/03/2021 Get du prefix
-            String prefix = "";
-            if (profil.isMute()) {
-                warnMute(player, profil);
-                // TODO: 31/03/2021 Send du msg au staff + joueur avec [mute]
+            Profile profile = CoreUtils.getProfile(uuid);
+            String prefix = CoreUtils.getPrefix(uuid);
+            String msg = ChatColor.translateAlternateColorCodes('&',
+                    prefix + " " + player.getDisplayName() + " §b»§r " + message);
+            if (profile.isMute()) {
+                if (player.isConnected()) {
+                    player.sendMessage(new TextComponent("§c[mute] " + msg));
+                    warnMute(player, profile);
+                }
+                for (ProxiedPlayer modo : ProxyServer.getInstance().getPlayers()) {
+                    if (!modo.getUniqueId().equals(player.getUniqueId()) && modo.hasPermission("modo.mute.other.see")) {
+                        modo.sendMessage(new TextComponent("§c[mute] " + msg));
+                    }
+                }
             } else {
                 // Redis
-                JedisManager.sendRedis(prefix + player.getDisplayName() + message);
+                for (ProxiedPlayer players : ProxyServer.getInstance().getPlayers()) {
+                    players.sendMessage(new TextComponent(msg));
+                }
+                JedisPub.sendRedisChat(ChatColor.stripColor(msg));
             }
             // Log du message dans la console, comme un message normal
-            MainBungee.log("<" + player.getDisplayName() + "> " + message);
+            MainBungee.log(ChatColor.stripColor("<" + player.getDisplayName() + "§r> " + message));
         } catch (SQLException throwable) {
             if (MainBungee.DEBUG_ERRORS) throwable.printStackTrace();
         }
     }
 
-    private void warnMute(ProxiedPlayer player, Profile profil) {
-        String str = DateMilekat.reamingToString(DateMilekat.getDate(profil.getMuted()));
+    private void warnMute(ProxiedPlayer player, Profile profile) {
+        String str = DateMilekat.reamingToString(profile.getMuted());
         TextComponent Mute = new TextComponent(MainBungee.PREFIX + "§6Vous serez unmute dans §b" + str + "§c.");
         Mute.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,new Text("§cLes modos peuvent" +
                 System.lineSeparator() + "encore voir vos" + System.lineSeparator() + "messages")));
@@ -78,8 +101,8 @@ public class Chat implements Listener {
      */
     private String cleanMessages(String message, UUID sender){
         // Évite le spam chat
-        int msg_recent = ChatManager.MSG_RECENT.getOrDefault(sender,0) + 1;
-        ChatManager.MSG_RECENT.put(sender, msg_recent);
+        int msg_recent = MSG_RECENT.getOrDefault(sender,0) + 1;
+        MSG_RECENT.put(sender, msg_recent);
         if (msg_recent > MainBungee.getConfig().getInt("chat.spam_limit_kick")) {
             if (isOnline(sender)) {
                 ProxyServer.getInstance().getPlayer(sender)
@@ -94,14 +117,14 @@ public class Chat implements Listener {
             }
             return null;
         }
-        if (ChatManager.MSG_LAST.getOrDefault(sender,"").equalsIgnoreCase(message)) {
+        if (MSG_LAST.getOrDefault(sender,"").equalsIgnoreCase(message)) {
             if (isOnline(sender)) {
                 ProxyServer.getInstance().getPlayer(sender)
                         .sendMessage(new TextComponent(MainBungee.PREFIX + "§cMessage déjà envoyé."));
             }
             return null;
         }
-        ChatManager.MSG_LAST.put(sender, message);
+        MSG_LAST.put(sender, message);
         // Réduction des messages en MAJ
         if (message.length() > MainBungee.getConfig().getInt("chat.min_lower_case_length")) {
             int upperCase = 0;

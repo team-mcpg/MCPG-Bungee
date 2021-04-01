@@ -43,7 +43,8 @@ public class Debugger extends Command implements TabExecutor {
      * @param sender joueur qui exécute la commande
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6/debugger <debugger>:§r Switch un débugger."));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6/debugger exceptions:§r Débug des erreurs java."));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6/debugger jedis:§r Débug des erreurs jedis."));
     }
 
     @Override

@@ -41,8 +41,8 @@ public class MainBungee extends Plugin {
         jedis = data.getJedis();
         /* Classes */
         new CoreManager(this, ProxyServer.getInstance().getPluginManager());
-        new ChatManager(this, ProxyServer.getInstance().getPluginManager());
         new ConnectionsManager(this, ProxyServer.getInstance().getPluginManager());
+        new ChatManager(this, ProxyServer.getInstance().getPluginManager());
     }
 
     @Override
@@ -50,16 +50,13 @@ public class MainBungee extends Plugin {
         sql.disconnect();
     }
 
-
     public static MainBungee getInstance(){ return mainBungee; }
 
     public static void log(String message) { ProxyServer.getInstance().getLogger().info(MainBungee.PREFIX + message); }
     public static void info(String log) { ProxyServer.getInstance().getLogger().info(MainBungee.PREFIX + log); }
     public static void warning(String log) { ProxyServer.getInstance().getLogger().warning(MainBungee.PREFIX + log); }
 
-    public static Configuration getConfig(){ return mainBungee.config; }
+    public static Configuration getConfig() { return mainBungee.config; }
 
-    public static Connection getSql(){ return mainBungee.sql.getConnection(); }
-
-    public static Jedis getJedis(){ return mainBungee.jedis; }
+    public static Connection getSql() { return mainBungee.sql.getConnection(); }
 }

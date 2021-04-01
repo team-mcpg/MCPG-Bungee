@@ -69,9 +69,7 @@ public class DateMilekat {
     }
 
     /**
-     *      Convertir les 4j5h9m3s en duration
-     * @param period String à transformer en duration
-     * @return duration
+     * Convert 4j5h9m3s in duration (Long)
      */
     public static Long stringToPeriod(String period){
         if(period == null) return null;
