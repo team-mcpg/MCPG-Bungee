@@ -4,8 +4,8 @@ import fr.milekat.MCPG_Bungee.chat.ChatManager;
 import fr.milekat.MCPG_Bungee.core.CoreManager;
 import fr.milekat.MCPG_Bungee.data.DataManager;
 import fr.milekat.MCPG_Bungee.data.MariaDB.MariaManage;
+import fr.milekat.MCPG_Bungee.moderation.ModerationManager;
 import fr.milekat.MCPG_Bungee.proxy.ConnectionsManager;
-import fr.milekat.MCPG_Bungee.utils.DateMilekat;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -17,7 +17,7 @@ public class MainBungee extends Plugin {
     //  Bungee/configs
     private static MainBungee mainBungee;
     private Configuration config;
-    public final static String PREFIX = "§8[§6Cité Givrée§8]§r ";
+    public final static String PREFIX = "§7[§bLa Cité Givrée§7]§r ";
     public static boolean DEBUG_ERRORS = false;
 
     //  SQL/Jedis
@@ -25,8 +25,10 @@ public class MainBungee extends Plugin {
     public static boolean DEBUG_JEDIS = false;
 
     //  Dates
-    public final static Date DATE_MAINTENANCE = DateMilekat.getDate("01/01/2021 00:00:00");
-    public final static Date DATE_OPEN = DateMilekat.getDate("16/04/2021 14:00:00");
+    public static Date DATE_MAINTENANCE = new Date();
+    public static Date DATE_MAINTENANCE_OFF = new Date();
+    public static Date DATE_OPEN = new Date();
+    public static Date DATE_BAN = new Date();
 
     @Override
     public void onEnable(){
@@ -36,11 +38,13 @@ public class MainBungee extends Plugin {
         config = data.getConfigurations();
         /* SQL/Jedis */
         sql = data.getSQL();
+        data.loadDates();
         data.getJedis();
         /* Classes */
         new CoreManager(this, ProxyServer.getInstance().getPluginManager());
         new ConnectionsManager(this, ProxyServer.getInstance().getPluginManager());
         new ChatManager(this, ProxyServer.getInstance().getPluginManager());
+        new ModerationManager(this, ProxyServer.getInstance().getPluginManager());
     }
 
     @Override

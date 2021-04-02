@@ -32,7 +32,7 @@ public class ChatTeam extends Command {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/teamchat <message>:§r Envoi un message à votre équipe."));
     }
 }

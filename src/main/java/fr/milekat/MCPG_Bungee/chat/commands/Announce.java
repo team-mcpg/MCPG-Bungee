@@ -25,7 +25,7 @@ public class Announce extends Command {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/bc <message>:§r envoyer une annonce dans le chat."));
     }
 }

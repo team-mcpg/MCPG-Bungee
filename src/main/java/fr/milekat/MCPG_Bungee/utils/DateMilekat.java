@@ -44,9 +44,9 @@ public class DateMilekat {
         SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         try {
             return df.parse(date);
-        } catch (ParseException throwables) {
+        } catch (ParseException throwable) {
             MainBungee.warning("Impossible d'effectuer une convertion de date !");
-            if (MainBungee.DEBUG_ERRORS) throwables.printStackTrace();
+            if (MainBungee.DEBUG_ERRORS) throwable.printStackTrace();
             return null;
         }
     }

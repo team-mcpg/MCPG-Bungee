@@ -55,7 +55,7 @@ public class Reply extends Command {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/r <Message>:§r envoyer message privé au dernier destinataire."));
     }
 }

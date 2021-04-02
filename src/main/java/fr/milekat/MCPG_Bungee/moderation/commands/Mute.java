@@ -1,9 +1,9 @@
-package fr.milekat.MCPG_Bungee.chat.commands;
+package fr.milekat.MCPG_Bungee.moderation.commands;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
-import fr.milekat.MCPG_Bungee.chat.ChatUtils;
 import fr.milekat.MCPG_Bungee.core.CoreUtils;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
+import fr.milekat.MCPG_Bungee.moderation.ModerationUtils;
 import fr.milekat.MCPG_Bungee.utils.DateMilekat;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -12,8 +12,8 @@ import net.md_5.bungee.api.plugin.Command;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class MuteCmd extends Command {
-    public MuteCmd() {
+public class Mute extends Command {
+    public Mute() {
         super("mute", "modo.chat.mute.mute");
     }
 
@@ -23,7 +23,7 @@ public class MuteCmd extends Command {
             try {
                 Profile profile = CoreUtils.getProfile(args[0]);
                 Long time = DateMilekat.stringToPeriod(args[1]) + new Date().getTime();
-                ChatUtils.mute(profile.getName(), sender.getName(), time, CoreUtils.getArgsText(2, args));
+                ModerationUtils.mute(profile.getName(), sender.getName(), time, CoreUtils.getArgsText(2, args));
             } catch (SQLException throwable) {
                 sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§cJoueur introuvable."));
             }
@@ -36,7 +36,7 @@ public class MuteCmd extends Command {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/mute <player> <time> <reason>:§r Mute le joueur."));
     }
 }

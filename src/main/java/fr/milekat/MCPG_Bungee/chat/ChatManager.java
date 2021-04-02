@@ -2,11 +2,9 @@ package fr.milekat.MCPG_Bungee.chat;
 
 import fr.milekat.MCPG_Bungee.chat.commands.*;
 import fr.milekat.MCPG_Bungee.chat.engine.Announces;
-import fr.milekat.MCPG_Bungee.chat.engine.Mute;
 import fr.milekat.MCPG_Bungee.chat.engine.Spam;
 import fr.milekat.MCPG_Bungee.chat.events.Chat;
 import fr.milekat.MCPG_Bungee.chat.events.JoinLeaveMessages;
-import fr.milekat.MCPG_Bungee.chat.events.MuteEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -26,11 +24,7 @@ public class ChatManager {
         pm.registerCommand(plugin, new ChatMode(chat_team));
         new Announces(10L);
         new Spam(msg_recent, 500L);
-        new Mute();
-        pm.registerListener(plugin, new MuteEvent());
-        pm.registerCommand(plugin, new MuteCmd());
-        pm.registerCommand(plugin, new UnMuteCmd());
-        pm.registerCommand(plugin, new Private(private_last));
+        pm.registerCommand(plugin, new PrivateMessage(private_last));
         pm.registerCommand(plugin, new Reply(private_last));
         pm.registerCommand(plugin, new Announce());
         pm.registerCommand(plugin, new ChatTeam());

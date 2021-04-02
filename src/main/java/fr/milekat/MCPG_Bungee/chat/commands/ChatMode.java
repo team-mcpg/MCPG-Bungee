@@ -37,7 +37,7 @@ public class ChatMode extends Command implements TabExecutor {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/chat all:§r Passe votre chat en mode général."));
         sender.sendMessage(new TextComponent("§6/chat team:§r Passe votre chat en mode équipe."));
     }

@@ -2,6 +2,7 @@ package fr.milekat.MCPG_Bungee.chat.events;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.data.jedis.JedisPub;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -29,7 +30,7 @@ public class JoinLeaveMessages implements Listener {
         String msg = MainBungee.getConfig().getString("connection.join")
                 .replaceAll("@player", event.getPlayer().getName());
         //  Redis
-        JedisPub.sendRedisChat(msg);
+        JedisPub.sendRedisChat(ChatColor.stripColor(msg));
         //  Chat
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) player.sendMessage(new TextComponent(msg));
     }
@@ -39,7 +40,7 @@ public class JoinLeaveMessages implements Listener {
         String msg = MainBungee.getConfig().getString("connection.leave")
                 .replaceAll("@player", event.getPlayer().getName());
         //  Redis
-        JedisPub.sendRedisChat(msg);
+        JedisPub.sendRedisChat(ChatColor.stripColor(msg));
         //  Chat
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) player.sendMessage(new TextComponent(msg));
     }

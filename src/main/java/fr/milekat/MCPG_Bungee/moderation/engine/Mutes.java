@@ -1,7 +1,7 @@
-package fr.milekat.MCPG_Bungee.chat.engine;
+package fr.milekat.MCPG_Bungee.moderation.engine;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
-import fr.milekat.MCPG_Bungee.chat.ChatUtils;
+import fr.milekat.MCPG_Bungee.moderation.ModerationUtils;
 import net.md_5.bungee.api.ProxyServer;
 
 import java.sql.Connection;
@@ -10,8 +10,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class Mute {
-    public Mute() {
+public class Mutes {
+    public Mutes() {
         ProxyServer.getInstance().getScheduler().schedule(MainBungee.getInstance(), () -> {
             try {
                 Connection connection = MainBungee.getSql();
@@ -20,7 +20,8 @@ public class Mute {
                 q.execute();
                 while (q.getResultSet().next()){
                     if (q.getResultSet().getTimestamp("muted").getTime() <= new Date().getTime()) {
-                        ChatUtils.unMute(q.getResultSet().getString("username"), "bot", "Fin du délai");
+                        ModerationUtils.unMute(q.getResultSet().getString("username"),
+                                "CONSOLE", "Fin du délai");
                     }
                 }
                 q.close();

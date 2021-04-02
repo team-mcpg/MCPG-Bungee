@@ -54,11 +54,13 @@ public class JoinHandler implements Listener {
             }
             if (profile.isBan()) {
                 // Le joueur est ban ou tempban
-                if (profile.getBanned().equals("def")) {
-                    event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.ban")));
+                if (profile.getBanned().equals(MainBungee.DATE_BAN)) {
+                    event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.ban")
+                            .replaceAll("@reason", profile.getReason())));
                 } else {
                     event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.tempban")
-                            .replaceAll("@time", DateMilekat.reamingToString(profile.getBanned()))));
+                            .replaceAll("@time", DateMilekat.reamingToString(profile.getBanned()))
+                            .replaceAll("@reason", profile.getReason())));
                 }
                 event.setCancelled(true);
             }

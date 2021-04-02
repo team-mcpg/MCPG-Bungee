@@ -32,7 +32,7 @@ public class CoreUtils {
         q.setString(1, uuid.toString());
         q.execute();
         q.getResultSet().next();
-        Profile profile = getFromSQL(q);
+        Profile profile = getProfileFromSQL(q);
         q.close();
         return profile;
     }
@@ -46,7 +46,7 @@ public class CoreUtils {
         q.setString(1, player);
         q.execute();
         q.getResultSet().next();
-        Profile profile = getFromSQL(q);
+        Profile profile = getProfileFromSQL(q);
         q.close();
         return profile;
     }
@@ -54,7 +54,7 @@ public class CoreUtils {
     /**
      * Set Profile from SQL ResultSet
      */
-    public static Profile getFromSQL(PreparedStatement q) throws SQLException {
+    public static Profile getProfileFromSQL(PreparedStatement q) throws SQLException {
         return new Profile(q.getResultSet().getString("username"),
                 q.getResultSet().getString("uuid")!=null ?
                         UUID.fromString(q.getResultSet().getString("uuid")) : null,
@@ -108,7 +108,7 @@ public class CoreUtils {
         q.setInt(1, id);
         q.execute();
         while (q.getResultSet().next()) {
-            members.add(getFromSQL(q));
+            members.add(getProfileFromSQL(q));
         }
         q.close();
         return members;

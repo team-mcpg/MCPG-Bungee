@@ -16,9 +16,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Private extends Command implements TabExecutor {
+public class PrivateMessage extends Command implements TabExecutor {
     private final HashMap<ProxiedPlayer, ProxiedPlayer> PRIVATE_LAST;
-    public Private(HashMap<ProxiedPlayer, ProxiedPlayer> private_last) {
+    public PrivateMessage(HashMap<ProxiedPlayer, ProxiedPlayer> private_last) {
         super("m", "", "mp", "dm", "msg", "message", "private", "tell", "w", "whisper");
         this.PRIVATE_LAST = private_last;
     }
@@ -58,7 +58,7 @@ public class Private extends Command implements TabExecutor {
      * Help infos
      */
     private void sendHelp(CommandSender sender){
-        sender.sendMessage(new TextComponent(MainBungee.PREFIX));
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/mp <Destinataire> <Message>:§r envoyer message privé au destinataire."));
     }
 
