@@ -1,5 +1,6 @@
 package fr.milekat.MCPG_Bungee.economy.commands;
 
+import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.economy.EconomyUtils;
 import fr.milekat.MCPG_Bungee.utils.McTools;
 import net.md_5.bungee.api.CommandSender;
@@ -24,11 +25,22 @@ public class Top extends Command implements TabExecutor {
                 EconomyUtils.sendAllRankings();
             } else if (args.length >= 1) {
                 top(sender, args[0], args.length >= 2 ? Integer.parseInt(args[1]) : 0);
-            }
+            } else sendHelp(sender);
         } catch (SQLException throwable) {
             sender.sendMessage(new TextComponent("§cData error"));
             throwable.printStackTrace();
         }
+    }
+
+    /**
+     * Help infos
+     */
+    private void sendHelp(CommandSender sender){
+        sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
+        sender.sendMessage(new TextComponent("§6/top solo [<min>]:§r Voir le top solo [top mini affiché]."));
+        sender.sendMessage(new TextComponent("§6/top duo [<min>]:§r Voir le top duo/trio [top mini affiché]."));
+        sender.sendMessage(new TextComponent("§6/top team [<min>]:§r Voir le top des équipes [top mini affiché]."));
+        sender.sendMessage(new TextComponent("§6/top broadcast:§r Envois le top 5 de tous les classements en annonces."));
     }
 
     private void top(CommandSender sender, String type, int min) throws SQLException {

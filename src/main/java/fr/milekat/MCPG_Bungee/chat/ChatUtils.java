@@ -18,7 +18,7 @@ public class ChatUtils {
      */
     public static void sendAnnounce(String announce) {
         announce = ChatColor.translateAlternateColorCodes('&', announce.replace("\\n", System.lineSeparator()));
-        JedisPub.sendRedisChat("**Annonce »**" + ChatColor.stripColor(announce));
+        JedisPub.sendRedisChat("**Annonce »** " + ChatColor.stripColor(announce));
         StringBuilder prettyAnnounce = new StringBuilder();
         for (String splitLines : announce.split("\\r?\\n")) {
             MainBungee.info(splitLines);
@@ -43,6 +43,12 @@ public class ChatUtils {
         message = ChatColor.translateAlternateColorCodes('&', message);
         sender.sendMessage(sender.getUniqueId(), new TextComponent("§6[§cMoi §6> §c" + receiver.getName() + "§6]§r " + message));
         receiver.sendMessage(sender.getUniqueId(), new TextComponent("§6[§c" + sender.getName() + " §6> §cMoi§6]§r " + message));
+        for (ProxiedPlayer loop : ProxyServer.getInstance().getPlayers()) {
+            if (loop.hasPermission("modo.chat.see.private") && !loop.equals(sender) && !loop.equals(receiver)) {
+                loop.sendMessage(sender.getUniqueId(),
+                        new TextComponent("§6[§" + sender.getName() + " §6> §c" + receiver.getName() + "§6]§r " + message));
+            }
+        }
     }
 
     /**
@@ -54,6 +60,11 @@ public class ChatUtils {
             ProxiedPlayer pMember = ProxyServer.getInstance().getPlayer(member.getUuid());
             if (pMember==null || !pMember.isConnected()) continue;
             pMember.sendMessage(player.getUniqueId(), new TextComponent("[Team] " + player.getName() + " §b»§r " + message));
+        }
+        if (team.getName().equalsIgnoreCase("staff")) return;
+        for (ProxiedPlayer loop : ProxyServer.getInstance().getPlayers()) {
+            if (loop.hasPermission("modo.chat.see.team")) loop.sendMessage(player.getUniqueId(),
+                    new TextComponent("[" + team.getName() + "] " + player.getName() + " §b»§r " + message));
         }
     }
 }

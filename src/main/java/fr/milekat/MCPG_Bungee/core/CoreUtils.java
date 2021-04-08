@@ -87,12 +87,12 @@ public class CoreUtils {
      */
     public static Team getTeam(Integer id) throws SQLException {
         Connection connection = MainBungee.getSql();
-        PreparedStatement q = connection.prepareStatement("SELECT `name` FROM `mcpg_team` WHERE `team_id` = ?;");
+        PreparedStatement q = connection.prepareStatement("SELECT `name`, `money` FROM `mcpg_team` WHERE `team_id` = ?;");
         q.setInt(1, id);
         q.execute();
         q.getResultSet().next();
-        Team team = new Team(
-                q.getResultSet().getString("name"),
+        Team team = new Team(q.getResultSet().getString("name"),
+                q.getResultSet().getInt("money"),
                 CoreUtils.getTeamMembers(id));
         q.close();
         return team;
