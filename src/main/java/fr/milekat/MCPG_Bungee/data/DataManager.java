@@ -56,9 +56,7 @@ public class DataManager {
                 0);
         jedis.auth(MainBungee.getConfig().getString("redis.auth"));
         JedisSub jedisSub = new JedisSub();
-        if (MainBungee.DEBUG_JEDIS) {
-            MainBungee.info("Debug jedis activé");
-        }
+        if (MainBungee.DEBUG_JEDIS) MainBungee.info("Debug jedis activé");
         new Thread("Redis-Bungee-Sub") {
             @Override
             public void run() {

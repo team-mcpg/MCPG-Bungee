@@ -4,6 +4,7 @@ import fr.milekat.MCPG_Bungee.chat.ChatManager;
 import fr.milekat.MCPG_Bungee.core.CoreManager;
 import fr.milekat.MCPG_Bungee.data.DataManager;
 import fr.milekat.MCPG_Bungee.data.MariaDB.MariaManage;
+import fr.milekat.MCPG_Bungee.economy.EconomyManager;
 import fr.milekat.MCPG_Bungee.moderation.ModerationManager;
 import fr.milekat.MCPG_Bungee.proxy.ConnectionsManager;
 import net.md_5.bungee.api.ProxyServer;
@@ -45,6 +46,7 @@ public class MainBungee extends Plugin {
         new ConnectionsManager(this, ProxyServer.getInstance().getPluginManager());
         new ChatManager(this, ProxyServer.getInstance().getPluginManager());
         new ModerationManager(this, ProxyServer.getInstance().getPluginManager());
+        new EconomyManager(this, ProxyServer.getInstance().getPluginManager());
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.milekat.MCPG_Bungee.moderation.commands;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.CoreUtils;
+import fr.milekat.MCPG_Bungee.data.jedis.JedisPub;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -23,6 +24,11 @@ public class Kick extends Command {
             }
             target.disconnect(new TextComponent(MainBungee.getConfig().getString("connection.kick")
                     .replaceAll("@reason", CoreUtils.getArgsText(1, args))));
+            JedisPub.sendRedisLog("kick" + "#:#" +
+                    target.getName() + "#:#" +
+                    sender.getName() + "#:#" +
+                    "null" + "#:#" +
+                    CoreUtils.getArgsText(1, args));
         } else {
             sendHelp(sender);
         }

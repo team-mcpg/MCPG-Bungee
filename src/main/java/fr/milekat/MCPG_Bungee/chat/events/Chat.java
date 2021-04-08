@@ -20,7 +20,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 public class Chat implements Listener {
@@ -56,7 +55,7 @@ public class Chat implements Listener {
     @EventHandler
     public void onDiscordChat(CustomJedisSub event) {
         String[] raw = event.getRedisMsg().split("\\|");
-        String message = cleanMessages(event.getRedisMsg().replaceAll(raw[0] + "\\|", ""),
+        String message = cleanMessages(event.getRedisMsg().replace(raw[0] + "|", ""),
                 UUID.fromString(raw[0]));
         if (message!=null) sendChat(UUID.fromString(raw[0]), message);
     }
@@ -65,20 +64,20 @@ public class Chat implements Listener {
      * Send message in chat
      */
     private void sendChat(UUID uuid, String message) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         try {
             Profile profile = CoreUtils.getProfile(uuid);
             String prefix = CoreUtils.getPrefix(uuid);
             String msg = ChatColor.translateAlternateColorCodes('&',
-                    prefix + " " + player.getDisplayName() + " §b»§r " + message);
+                    prefix + " " + profile.getName() + " §b»§r " + message);
             if (profile.isMute()) {
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if (player.isConnected()) {
                     player.sendMessage(new TextComponent("§c§l[MUTE]§r " + msg));
                     warnMute(player, profile);
                 }
-                for (ProxiedPlayer modo : ProxyServer.getInstance().getPlayers()) {
-                    if (!modo.getUniqueId().equals(player.getUniqueId()) && modo.hasPermission("modo.mute.other.see")) {
-                        modo.sendMessage(new TextComponent("§c§l[MUTE]§r " + msg));
+                for (ProxiedPlayer mod : ProxyServer.getInstance().getPlayers()) {
+                    if (!mod.getUniqueId().equals(profile.getUuid()) && mod.hasPermission("modo.mute.other.see")) {
+                        mod.sendMessage(new TextComponent("§c§l[MUTE]§r " + msg));
                     }
                 }
             } else {
@@ -90,7 +89,7 @@ public class Chat implements Listener {
                 JedisPub.sendRedisChat(ChatColor.stripColor(msg));
             }
             // Log du message dans la console, comme un message normal
-            MainBungee.log(ChatColor.stripColor("<" + player.getDisplayName() + "§r> " + message));
+            MainBungee.log(ChatColor.stripColor("<" + profile.getName() + "§r> " + message));
         } catch (SQLException throwable) {
             if (MainBungee.DEBUG_ERRORS) throwable.printStackTrace();
         }
@@ -152,10 +151,10 @@ public class Chat implements Listener {
             }
         }
         // Retirer les mots interdits
-        String[] messages = message.split(" ");
+        String[] messages = message.split("\\s+");
         for (String word : messages) {
-            if (MainBungee.getConfig().getList("chat.banned_words").contains(word.toLowerCase(Locale.ROOT))) {
-                message = message.replaceAll(word, word.replaceAll("\\.","*"));
+            if (MainBungee.getConfig().getList("chat.banned_words").contains(word.toLowerCase())) {
+                message = message.replace(word, word.replaceAll(".","*"));
             }
         }
         return message;

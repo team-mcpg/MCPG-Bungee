@@ -27,6 +27,12 @@ public class Ban extends Command {
                     time = MainBungee.DATE_BAN.getTime();
                 } else {
                     time = DateMilekat.stringToPeriod(args[1]) + new Date().getTime();
+                    // Check si la maintenance est plus petite que 10s (10000ms)
+                    if (time < (new Date().getTime() + 10000)) {
+                        sender.sendMessage(new TextComponent(MainBungee.PREFIX +
+                                "§cMerci d'indiquer un délais suppérieur à 10s."));
+                        return;
+                    }
                 }
                 ModerationUtils.ban(profile.getName(), sender.getName(), time, CoreUtils.getArgsText(2, args));
             } catch (SQLException throwable) {

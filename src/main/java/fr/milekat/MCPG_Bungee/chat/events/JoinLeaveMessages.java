@@ -27,21 +27,23 @@ public class JoinLeaveMessages implements Listener {
     public void onProxyJoined(PostLoginEvent event){
         MSG_LAST.remove(event.getPlayer().getUniqueId());
         MSG_RECENT.remove(event.getPlayer().getUniqueId());
-        String msg = MainBungee.getConfig().getString("connection.join")
-                .replaceAll("@player", event.getPlayer().getName());
-        //  Redis
-        JedisPub.sendRedisChat(ChatColor.stripColor(msg));
-        //  Chat
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) player.sendMessage(new TextComponent(msg));
+        send(MainBungee.getConfig().getString("connection.join")
+                .replaceAll("@player", event.getPlayer().getName()));
     }
 
     @EventHandler
     public void onProxyLeave(PlayerDisconnectEvent event) {
-        String msg = MainBungee.getConfig().getString("connection.leave")
-                .replaceAll("@player", event.getPlayer().getName());
+        send(MainBungee.getConfig().getString("connection.leave")
+                .replaceAll("@player", event.getPlayer().getName()));
+
+    }
+
+    private void send(String msg) {
         //  Redis
         JedisPub.sendRedisChat(ChatColor.stripColor(msg));
         //  Chat
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) player.sendMessage(new TextComponent(msg));
+        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+            player.sendMessage(new TextComponent(MainBungee.PREFIX + msg));
+        }
     }
 }

@@ -1,5 +1,6 @@
 package fr.milekat.MCPG_Bungee.chat;
 
+import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.CoreUtils;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
 import fr.milekat.MCPG_Bungee.core.obj.Team;
@@ -16,10 +17,13 @@ public class ChatUtils {
      * Process an announce (Chat + RedisChat)
      */
     public static void sendAnnounce(String announce) {
-        JedisPub.sendRedisChat(announce);
+        announce = ChatColor.translateAlternateColorCodes('&', announce.replace("\\n", System.lineSeparator()));
+        JedisPub.sendRedisChat("**Annonce »**" + ChatColor.stripColor(announce));
         StringBuilder prettyAnnounce = new StringBuilder();
-        for (String splitLines : ChatColor.translateAlternateColorCodes('&', announce).split("\n")) {
+        for (String splitLines : announce.split("\\r?\\n")) {
+            MainBungee.info(splitLines);
             for (String splitSize : splitLines.split("(?<=\\G.{37,}\\s)")) {
+                MainBungee.info(splitSize);
                 if (splitSize.length() > 1) prettyAnnounce.append("   ")
                         .append(ChatColor.translateAlternateColorCodes('&', splitSize))
                         .append(System.lineSeparator());

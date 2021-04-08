@@ -22,7 +22,13 @@ public class Mute extends Command {
         if (args.length >= 3) {
             try {
                 Profile profile = CoreUtils.getProfile(args[0]);
-                Long time = DateMilekat.stringToPeriod(args[1]) + new Date().getTime();
+                long time = DateMilekat.stringToPeriod(args[1]) + new Date().getTime();
+                // Check si la maintenance est plus petite que 10s (10000ms)
+                if (time < (new Date().getTime() + 10000)) {
+                    sender.sendMessage(new TextComponent(MainBungee.PREFIX +
+                            "§cMerci d'indiquer un délais suppérieur à 10s."));
+                    return;
+                }
                 ModerationUtils.mute(profile.getName(), sender.getName(), time, CoreUtils.getArgsText(2, args));
             } catch (SQLException throwable) {
                 sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§cJoueur introuvable."));

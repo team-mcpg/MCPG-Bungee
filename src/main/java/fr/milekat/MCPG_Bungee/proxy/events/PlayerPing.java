@@ -42,13 +42,16 @@ public class PlayerPing implements Listener {
             });
         } else {
             ping.setDescriptionComponent(new TextComponent(
-                    MainBungee.PREFIX + "§6Évent cité au §2émeraudes §b[EN COURS]§c.\n" +
-                    "§6Web§c: §b§nwww.la-cite-givree.fr§6 - jusqu'au §c27/12/2020"));
+                    MainBungee.PREFIX + "§6Évent cité §b[EN COURS]§c.\n" +
+                    "§6Web§c: §b§nwww.la-cite-givree.fr§6 - jusqu'au §c21/04/2021"));
             ArrayList<ServerPing.PlayerInfo> onlines = new ArrayList<>();
             for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
                 if (!player.hasPermission("modo")) onlines.add(new ServerPing.PlayerInfo(player.getName(), ""));
             }
-            ping.setPlayers(new ServerPing.Players(150, onlines.size(), (ServerPing.PlayerInfo[]) onlines.toArray()));
+            ping.setPlayers(new ServerPing.Players(150, onlines.size(), new ServerPing.PlayerInfo[]{
+                    new ServerPing.PlayerInfo("§2La cité a débutée !", ""),
+                    new ServerPing.PlayerInfo("§b§www.la-cite-givree.fr", "")
+            }));
         }
         event.setResponse(ping);
     }
