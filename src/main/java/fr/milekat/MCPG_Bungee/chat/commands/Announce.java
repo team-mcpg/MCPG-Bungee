@@ -9,7 +9,7 @@ import net.md_5.bungee.api.plugin.Command;
 
 public class Announce extends Command {
     public Announce() {
-        super("broadcast", "modo.chat.announce.new", "bc", "alert", "say", "info");
+        super("broadcast", "modo.chat.announce.new", "bc", "alert", "say");
     }
 
     @Override

@@ -67,8 +67,9 @@ public class Chat implements Listener {
         try {
             Profile profile = CoreUtils.getProfile(uuid);
             String prefix = CoreUtils.getPrefix(uuid);
+            prefix =  prefix == null ? "" : prefix + " ";
             String msg = ChatColor.translateAlternateColorCodes('&',
-                    prefix + " " + profile.getName() + " §b»§r " + message);
+                    prefix + profile.getName() + " §b»§r " + message);
             if (profile.isMute()) {
                 ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
                 if (player.isConnected()) {
@@ -107,10 +108,7 @@ public class Chat implements Listener {
     }
 
     /**
-     *      If safe_chat is enable, filter words, spamming and upercases
-     * @param message message à check
-     * @param sender qui envoi le msg
-     * @return message check ou null !
+     * If safe_chat is enable, filter words, spamming and upercases
      */
     private String cleanMessages(String message, UUID sender){
         // Évite le spam chat

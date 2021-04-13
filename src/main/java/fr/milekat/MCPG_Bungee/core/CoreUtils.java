@@ -68,13 +68,28 @@ public class CoreUtils {
     }
 
     /**
-     * Get the team of player by his discord id
+     * Get the team of player with his uuid
      */
     public static Team getPlayerTeam(UUID uuid) throws SQLException {
         int team;
         Connection connection = MainBungee.getSql();
         PreparedStatement q = connection.prepareStatement("SELECT `team_id` FROM `mcpg_player` WHERE `uuid` = ?;");
         q.setString(1, uuid.toString());
+        q.execute();
+        q.getResultSet().next();
+        team = q.getResultSet().getInt("team_id");
+        q.close();
+        return getTeam(team);
+    }
+
+    /**
+     * Get the team of player with his username
+     */
+    public static Team getPlayerTeam(String username) throws SQLException {
+        int team;
+        Connection connection = MainBungee.getSql();
+        PreparedStatement q = connection.prepareStatement("SELECT `team_id` FROM `mcpg_player` WHERE `username` = ?;");
+        q.setString(1, username);
         q.execute();
         q.getResultSet().next();
         team = q.getResultSet().getInt("team_id");

@@ -14,7 +14,8 @@ public class Ranking {
         ProxyServer.getInstance().getScheduler().schedule(MainBungee.getInstance(), () -> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
-            if (calendar.get(Calendar.HOUR_OF_DAY)!= LAST_HOUR && calendar.get(Calendar.HOUR_OF_DAY)==18) {
+            if (calendar.get(Calendar.HOUR_OF_DAY)!= LAST_HOUR && calendar.get(Calendar.HOUR_OF_DAY)==18 &&
+                    calendar.get(Calendar.MINUTE) < 2) {
                 EconomyUtils.sendAllRankings();
             }
             LAST_HOUR = calendar.get(Calendar.HOUR_OF_DAY);
