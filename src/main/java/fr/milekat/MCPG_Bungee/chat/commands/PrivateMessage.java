@@ -15,6 +15,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class PrivateMessage extends Command implements TabExecutor {
     private final HashMap<ProxiedPlayer, ProxiedPlayer> PRIVATE_LAST;
@@ -65,9 +66,7 @@ public class PrivateMessage extends Command implements TabExecutor {
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
         if (args.length <= 1) {
-            ArrayList<String> names = new ArrayList<>();
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) names.add(player.getDisplayName());
-            return McTools.getTabArgs(args[0], names);
+            return McTools.getTabArgs(args[0], ProxyServer.getInstance().getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList()));
         }
         return new ArrayList<>();
     }

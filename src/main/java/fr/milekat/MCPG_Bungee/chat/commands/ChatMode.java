@@ -10,11 +10,10 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 public class ChatMode extends Command implements TabExecutor {
-    private final ArrayList<UUID> CHAT_TEAM;
-    public ChatMode(ArrayList<UUID> chat_team) {
+    private final ArrayList<ProxiedPlayer> CHAT_TEAM;
+    public ChatMode(ArrayList<ProxiedPlayer> chat_team) {
         super("chat");
         this.CHAT_TEAM = chat_team;
     }
@@ -23,10 +22,10 @@ public class ChatMode extends Command implements TabExecutor {
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer)) return;
         if (args.length==1 && args[0].equalsIgnoreCase("all")) {
-            CHAT_TEAM.remove(((ProxiedPlayer) sender).getUniqueId());
+            CHAT_TEAM.remove(((ProxiedPlayer) sender));
             sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6Chat général activé"));
         } else if (args.length==1 && args[0].equalsIgnoreCase("team")) {
-            CHAT_TEAM.add(((ProxiedPlayer) sender).getUniqueId());
+            CHAT_TEAM.add(((ProxiedPlayer) sender));
             sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6Chat équipe activé"));
         } else {
             sendHelp(sender);
@@ -47,6 +46,6 @@ public class ChatMode extends Command implements TabExecutor {
         if (args.length <= 1) {
             return McTools.getTabArgs(args[0], new ArrayList<>(Arrays.asList("all", "team")));
         }
-        return null;
+        return new ArrayList<>();
     }
 }

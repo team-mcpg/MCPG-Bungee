@@ -3,13 +3,18 @@ package fr.milekat.MCPG_Bungee.moderation.commands;
 import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.CoreUtils;
 import fr.milekat.MCPG_Bungee.data.jedis.JedisPub;
+import fr.milekat.MCPG_Bungee.utils.McTools;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
-public class Kick extends Command {
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+public class Kick extends Command implements TabExecutor {
     public Kick() {
         super("kick", "modo.command.kick.full", "eject");
     }
@@ -41,5 +46,13 @@ public class Kick extends Command {
         sender.sendMessage(new TextComponent(MainBungee.PREFIX + "§6" + getClass().getSimpleName()));
         sender.sendMessage(new TextComponent("§6/kick <player>:§r Kick le joueur."));
         sender.sendMessage(new TextComponent("§6/kick <player> <reason>:§r Kick le joueur avec un motif."));
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length <= 1) {
+            return McTools.getTabArgs(args[0], ProxyServer.getInstance().getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList()));
+        }
+        return new ArrayList<>();
     }
 }

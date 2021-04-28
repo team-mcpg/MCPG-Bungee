@@ -25,9 +25,9 @@ import java.util.UUID;
 public class Chat implements Listener {
     private final HashMap<UUID, String> MSG_LAST;
     private final HashMap<UUID, Integer> MSG_RECENT;
-    private final ArrayList<UUID> CHAT_TEAM;
+    private final ArrayList<ProxiedPlayer> CHAT_TEAM;
 
-    public Chat(HashMap<UUID, String> msg_last, HashMap<UUID, Integer> msg_recent, ArrayList<UUID> chat_team) {
+    public Chat(HashMap<UUID, String> msg_last, HashMap<UUID, Integer> msg_recent, ArrayList<ProxiedPlayer> chat_team) {
         this.MSG_LAST = msg_last;
         this.MSG_RECENT = msg_recent;
         this.CHAT_TEAM = chat_team;
@@ -38,7 +38,7 @@ public class Chat implements Listener {
         if (event.isCommand()) return;
         event.setCancelled(true);
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-        if (CHAT_TEAM.contains(player.getUniqueId())) {
+        if (CHAT_TEAM.contains(player)) {
             try {
                 ChatUtils.sendChatTeam(player, event.getMessage());
             } catch (SQLException throwable) {

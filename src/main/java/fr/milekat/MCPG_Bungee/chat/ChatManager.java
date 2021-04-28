@@ -18,7 +18,7 @@ public class ChatManager {
         HashMap<UUID, String> msg_last = new HashMap<>();
         HashMap<UUID, Integer> msg_recent = new HashMap<>();
         HashMap<ProxiedPlayer, ProxiedPlayer> private_last = new HashMap<>();
-        ArrayList<UUID> chat_team = new ArrayList<>();
+        ArrayList<ProxiedPlayer> chat_team = new ArrayList<>();
         pm.registerListener(plugin, new JoinLeaveMessages(msg_last, msg_recent));
         pm.registerListener(plugin, new Chat(msg_last, msg_recent, chat_team));
         pm.registerCommand(plugin, new ChatMode(chat_team));
@@ -28,5 +28,6 @@ public class ChatManager {
         pm.registerCommand(plugin, new Reply(private_last));
         pm.registerCommand(plugin, new Announce());
         pm.registerCommand(plugin, new ChatTeam());
+        pm.registerCommand(plugin, new VipColor());
     }
 }

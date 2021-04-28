@@ -4,11 +4,16 @@ import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
 import fr.milekat.MCPG_Bungee.proxy.ConnectionsManager;
 import fr.milekat.MCPG_Bungee.utils.DateMilekat;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -67,6 +72,42 @@ public class JoinHandler implements Listener {
         } catch (SQLException throwable) {
             event.setCancelReason(new TextComponent(MainBungee.getConfig().getString("connection.register")));
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onJoinUpdateProfile(PostLoginEvent event) {
+        try {
+            Connection connection = MainBungee.getSql();
+            PreparedStatement q = connection.prepareStatement("UPDATE `mcpg_player` SET `username`= ? WHERE `uuid` = ?;");
+            q.setString(1, event.getPlayer().getName());
+            q.setString(2, event.getPlayer().getUniqueId().toString());
+            q.execute();
+            q.close();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
+    @EventHandler
+    public void onJoinEvent(ServerConnectEvent event) {
+        if (!event.getTarget().getName().equalsIgnoreCase("event")) return;
+        if (event.getPlayer().hasPermission("modo.event.connect.bypass")) return;
+        try {
+            Connection connection = MainBungee.getSql();
+            PreparedStatement q = connection.prepareStatement("SELECT `value` FROM `mcpg_config` WHERE `name` = ?;");
+            q.setString(1, "EVENT");
+            q.execute();
+            q.getResultSet().next();
+            if (!q.getResultSet().getBoolean("value")) {
+                if (event.getPlayer().getServer()!=null) {
+                    event.setCancelled(true);
+                } else {
+                    event.setTarget(ProxyServer.getInstance().getServerInfo("cite"));
+                }
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
     }
 }

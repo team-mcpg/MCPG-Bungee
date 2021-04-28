@@ -2,6 +2,7 @@ package fr.milekat.MCPG_Bungee.proxy;
 
 import fr.milekat.MCPG_Bungee.MainBungee;
 import fr.milekat.MCPG_Bungee.core.obj.Profile;
+import fr.milekat.MCPG_Bungee.proxy.commands.EventToggle;
 import fr.milekat.MCPG_Bungee.proxy.events.JoinHandler;
 import fr.milekat.MCPG_Bungee.proxy.events.PlayerPing;
 import net.md_5.bungee.api.ProxyServer;
@@ -20,6 +21,7 @@ public class ConnectionsManager {
     public ConnectionsManager(Plugin plugin, PluginManager pm) {
         pm.registerListener(plugin, new JoinHandler(this));
         pm.registerListener(plugin, new PlayerPing());
+        pm.registerCommand(plugin, new EventToggle());
     }
 
     /**

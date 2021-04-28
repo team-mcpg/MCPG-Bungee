@@ -19,11 +19,10 @@ public class ChatUtils {
     public static void sendAnnounce(String announce) {
         announce = ChatColor.translateAlternateColorCodes('&', announce.replace("\\n", System.lineSeparator()));
         JedisPub.sendRedisChat("**Annonce »** " + ChatColor.stripColor(announce));
+        MainBungee.log("Annonce » " + ChatColor.stripColor(announce));
         StringBuilder prettyAnnounce = new StringBuilder();
         for (String splitLines : announce.split("\\r?\\n")) {
-            MainBungee.info(splitLines);
             for (String splitSize : splitLines.split("(?<=\\G.{37,}\\s)")) {
-                MainBungee.info(splitSize);
                 if (splitSize.length() > 1) prettyAnnounce.append("   ")
                         .append(ChatColor.translateAlternateColorCodes('&', splitSize))
                         .append(System.lineSeparator());
@@ -31,7 +30,7 @@ public class ChatUtils {
         }
         for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
             player.sendMessage(new TextComponent("§r§7§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯§r §7[§6Annonce Cité§7§7]§r §r§7§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯§r" +
-                    System.lineSeparator() + System.lineSeparator() + prettyAnnounce.toString() + System.lineSeparator() +
+                    System.lineSeparator() + System.lineSeparator() + prettyAnnounce + System.lineSeparator() +
                     "§r§7§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯§r §7[§6Annonce Cité§7§7]§r §r§7§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯§r"));
         }
     }
@@ -46,7 +45,7 @@ public class ChatUtils {
         for (ProxiedPlayer loop : ProxyServer.getInstance().getPlayers()) {
             if (loop.hasPermission("modo.chat.see.private") && !loop.equals(sender) && !loop.equals(receiver)) {
                 loop.sendMessage(sender.getUniqueId(),
-                        new TextComponent("§6[§" + sender.getName() + " §6> §c" + receiver.getName() + "§6]§r " + message));
+                        new TextComponent("§6[§c" + sender.getName() + " §6> §c" + receiver.getName() + "§6]§r " + message));
             }
         }
     }
@@ -59,12 +58,12 @@ public class ChatUtils {
         for (Profile member : team.getMembers()) {
             ProxiedPlayer pMember = ProxyServer.getInstance().getPlayer(member.getUuid());
             if (pMember==null || !pMember.isConnected()) continue;
-            pMember.sendMessage(player.getUniqueId(), new TextComponent("[Team] " + player.getName() + " §b»§r " + message));
+            pMember.sendMessage(player.getUniqueId(), new TextComponent("§a[Team]§r " + player.getName() + " §b»§r " + message));
         }
         if (team.getName().equalsIgnoreCase("staff")) return;
         for (ProxiedPlayer loop : ProxyServer.getInstance().getPlayers()) {
             if (loop.hasPermission("modo.chat.see.team")) loop.sendMessage(player.getUniqueId(),
-                    new TextComponent("[" + team.getName() + "] " + player.getName() + " §b»§r " + message));
+                    new TextComponent("§a[" + team.getName() + "]§r " + player.getName() + " §b»§r " + message));
         }
     }
 }
